@@ -25,9 +25,6 @@ FROM transactions t
     INNER JOIN customers c   ON a.customer_id = c.customer_id
 ORDER BY t.transaction_date, customer_name;
 
--- KEY IDEA: We can't go directly from transactions → customers.
--- transactions has account_id → accounts has customer_id → customers.
--- We have to "hop" through accounts as a bridge.
 
 
 -- ============================================================
@@ -66,8 +63,6 @@ FROM customers c
 WHERE t.transaction_id IS NULL  -- NULL means no matching transaction was found
 ORDER BY c.signup_date;
 
--- KEY IDEA: LEFT JOIN returns all customers. If there's no matching
--- transaction, the transaction columns are NULL. We filter for those NULLs.
 
 
 -- ============================================================
@@ -104,9 +99,6 @@ GROUP BY c.customer_id, c.first_name, c.last_name
 HAVING COUNT(t.transaction_id) > 5
 ORDER BY transaction_count DESC;
 
--- KEY IDEA: WHERE filters rows BEFORE grouping.
--- HAVING filters groups AFTER grouping.
--- You need HAVING when your filter involves an aggregate (COUNT, SUM, etc.)
 
 
 -- ============================================================
@@ -175,8 +167,6 @@ WHERE status = 'active'
           AND t.amount > 0
       );
 
--- KEY IDEA: A subquery is a SELECT inside another SELECT.
--- The inner query runs once for each row of the outer query.
 
 
 -- ============================================================
@@ -230,7 +220,7 @@ ORDER BY m.category;
 
 
 -- ============================================================
--- CHALLENGE: Try these on your own
+-- FURTHER ANALYSIS IDEAS
 -- ============================================================
 -- A. Which country has the highest total account balance?
 -- B. Show all transactions from business customers only
