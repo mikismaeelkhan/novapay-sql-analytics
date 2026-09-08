@@ -4,11 +4,8 @@
 --  Concepts: SELECT, WHERE, ORDER BY, LIMIT, DISTINCT, LIKE,
 --            aggregate functions (COUNT, SUM, AVG, MIN, MAX)
 -- ============================================================
--- HOW TO USE THIS FILE:
---   1. Read the BUSINESS QUESTION for context
---   2. Read the CONCEPTS being introduced
---   3. Study the SQL, then try to understand each line
---   4. Run it and check the result matches the expected output
+-- Each query lists the business question it answers and the
+-- result it returns against the sample data in 01_schema_and_data.sql.
 -- ============================================================
 
 
@@ -21,7 +18,7 @@
 SELECT COUNT(*) AS total_customers
 FROM customers;
 
--- Expected: 15
+-- Result: 15
 
 
 -- ============================================================
@@ -34,7 +31,7 @@ SELECT first_name, last_name, email, signup_date
 FROM customers
 WHERE country = 'USA';
 
--- Expected: Aisha, James, Marcus, Daniel, Sam  (5 rows)
+-- Result: Aisha, James, Marcus, Daniel, Sam  (5 rows)
 
 
 -- ============================================================
@@ -48,7 +45,7 @@ FROM customers
 WHERE is_active = 0
 ORDER BY last_name;
 
--- Expected: Mei Lin, Nia Okafor
+-- Result: Mei Lin, Nia Okafor
 
 
 -- ============================================================
@@ -62,7 +59,7 @@ FROM accounts
 ORDER BY balance DESC
 LIMIT 5;
 
--- Expected: account 120 ($320k), 104 ($245k), 110 (£180k), etc.
+-- Result: account 120 ($320k), 104 ($245k), 110 (£180k), etc.
 
 
 -- ============================================================
@@ -76,7 +73,7 @@ FROM accounts
 GROUP BY account_type
 ORDER BY number_of_accounts DESC;
 
--- Expected: checking(10), savings(4), investment(4)  ← roughly
+-- Result: checking(10), savings(4), investment(4)  ← roughly
 
 
 -- ============================================================
@@ -155,7 +152,7 @@ GROUP BY SUBSTR(transaction_date, 1, 7)
 ORDER BY month;
 
 -- ============================================================
--- CHALLENGE: Try these on your own before looking up the answer
+-- FURTHER ANALYSIS IDEAS
 -- ============================================================
 -- A. How many business vs retail customers do we have?
 -- B. List all accounts that are NOT active (closed or frozen)
