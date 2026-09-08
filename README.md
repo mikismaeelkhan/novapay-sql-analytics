@@ -1,124 +1,90 @@
-# NovaPay FinTech Analytics — SQL Portfolio Project
+NovaPay FinTech Analytics — SQL Portfolio Project
 
-A beginner-to-advanced SQL project built around a fictional neobank. You play the role of a **Data Analyst at NovaPay**, answering real business questions across customer, account, and transaction data.
+Role: Data Analyst (simulated) Tools: SQL, SQLite, DB Browser for SQLite Dataset: 4 tables, 15 customers, 20 accounts, 53 transactions, 15 merchants
 
-Built for: Data Analyst roles in **tech and finance**
+Project Overview
 
----
+NovaPay is a fictional neobank operating across 8 countries. As the data analyst, I designed the full relational database schema from scratch and wrote 28+ SQL queries to answer real business questions across four domains: customer behaviour, account performance, transaction analysis, and fraud/risk detection.
 
-## What You'll Learn
+This project covers SQL from beginner to advanced — progressing from basic filtering and aggregation through to multi-table JOINs, CTEs, window functions, and cohort analysis.
 
-| File | Level | Concepts |
-|------|-------|----------|
-| `01_schema_and_data.sql` | Setup | Table design, data types, foreign keys |
-| `02_beginner_queries.sql` | Beginner | SELECT, WHERE, ORDER BY, COUNT, SUM, AVG |
-| `03_intermediate_queries.sql` | Intermediate | JOINs, GROUP BY, HAVING, CASE WHEN, subqueries |
-| `04_advanced_queries.sql` | Advanced | CTEs (WITH), window functions, LAG, RANK, running totals |
-
----
-
-## The Business
-
-**NovaPay** is a neobank serving retail and business customers across 9 countries. The database tracks:
-
-- **customers** — 15 customers (retail + business), 9 countries
-- **accounts** — checking, savings, and investment accounts
-- **transactions** — deposits, withdrawals, and transfers
-- **merchants** — 15 merchants across 6 spending categories
-
----
-
-## Schema
-
-```
+Key Findings
+Customer Overview
+15 customers across 8 countries (USA, UK, UAE, India, China, Germany, Mexico, Nigeria)
+13 active customers, 2 identified as churned and flagged for win-back campaign
+Customer base is split 67% retail / 33% business
+Assets Under Management
+$1.17M+ in total assets across 18 active accounts
+Largest single account: $320,000 investment account (Lin Zhao)
+Account types: 10 checking, 4 savings, 4 investment
+Transaction Insights
+53 total transactions across January–February 2024
+$556,900 in total deposits processed
+$77,500+ in total withdrawals across all accounts
+Largest single transaction: $200,000 initial investment deposit
+Business vs Retail Performance
+Business customers (33% of users) drove ~93% of all deposits
+Business customers averaged $170,000+ in deposits vs ~$8,000 for retail customers
+Business accounts held the top 3 highest balances across the entire platform
+Spending by Category
+Category	Total Spent	Avg Transaction
+Travel	$12,705	$1,588
+Tech	$9,729	$1,944
+Retail	$3,475	$695
+Food	$314	$52
+Healthcare	$100	$50
+Entertainment	$54	$13
+Travel and Tech combined accounted for over 80% of all customer spending
+Highest average transaction size: Tech at $1,944 per purchase
+Risk & Fraud Detection
+2 customers flagged at high churn risk — no transactions recorded in 60+ days
+Fraud detection query identified transactions more than 3x a customer's average spend
+James Wright (business) flagged for a $4,800 flight purchase — 1.5x above his average
+SQL Skills Demonstrated
+Concept	Where Used
+SELECT, WHERE, ORDER BY, LIMIT	Beginner queries — filtering customers, accounts, transactions
+Aggregate functions (COUNT, SUM, AVG, MIN, MAX)	Account totals, transaction summaries
+GROUP BY + HAVING	Spending by category, active customer counts
+INNER JOIN + LEFT JOIN	Connecting transactions → accounts → customers → merchants
+CASE WHEN	Account value tiering (High/Medium/Low)
+Subqueries	Finding accounts below their total deposit amount
+CTEs (WITH clauses)	Fraud detection, churn risk, executive summary
+Window functions (RANK, ROW_NUMBER, LAG)	Customer spending leaderboard, MoM growth
+Running totals (SUM OVER)	Cumulative deposit growth per account
+Cohort analysis	Spend behaviour grouped by customer signup month
+Database Schema
 customers
 ├── customer_id (PK)
 ├── first_name, last_name, email
 ├── country, segment (retail/business)
-├── signup_date, is_active
+└── signup_date, is_active
 
 accounts
 ├── account_id (PK)
 ├── customer_id (FK → customers)
 ├── account_type (checking/savings/investment)
-├── balance, currency, status
+└── balance, currency, status
 
 transactions
 ├── transaction_id (PK)
 ├── account_id (FK → accounts)
 ├── merchant_id (FK → merchants, nullable)
-├── amount (negative = spending, positive = deposit)
-├── transaction_type, description, transaction_date
+├── amount  [positive = deposit, negative = withdrawal]
+└── transaction_type, description, transaction_date
 
 merchants
 ├── merchant_id (PK)
 ├── merchant_name, category, country
-```
+Files
+File	Description
+01_schema_and_data.sql	Creates all 4 tables and loads 53 transactions of sample data
+02_beginner_queries.sql	10 beginner queries — SELECT, WHERE, ORDER BY, aggregates
+03_intermediate_queries.sql	10 intermediate queries — JOINs, GROUP BY, HAVING, CASE WHEN
+04_advanced_queries.sql	8 advanced queries — CTEs, window functions, fraud detection, churn risk
+How to Run
+Download DB Browser for SQLite — free
+Create a new database → open the Execute SQL tab
+Paste and run 01_schema_and_data.sql to set up the database
+Work through files 02, 03, 04 — paste queries one at a time and run
 
----
-
-## How to Run This
-
-### Option 1 — SQLite (recommended for beginners, free)
-1. Download [DB Browser for SQLite](https://sqlitebrowser.org/) — free GUI tool
-2. Create a new database: **File → New Database** → save as `novapay.db`
-3. Open `01_schema_and_data.sql` → paste into the SQL Editor → **Execute**
-4. Work through files `02`, `03`, `04` in order
-
-### Option 2 — PostgreSQL
-- Works as-is with minor adjustments:
-  - Replace `SUBSTR(date, 1, 7)` with `TO_CHAR(date, 'YYYY-MM')`
-  - Replace `julianday()` with `date - interval` syntax
-  - `||` string concat works the same
-
-### Option 3 — Online (no install)
-- [SQLiteOnline.com](https://sqliteonline.com/) — paste and run directly in the browser
-
----
-
-## Business Questions Answered
-
-### Beginner
-- How many customers does NovaPay have?
-- Which customers are inactive (churned)?
-- What are the top 5 accounts by balance?
-- How many transactions happened each month?
-
-### Intermediate
-- What is each customer's total spending?
-- Which customers have never made a transaction?
-- Which merchant categories are most popular?
-- What is each customer's net cash flow (in vs out)?
-
-### Advanced
-- Rank customers by spending (overall and within segment)
-- Calculate month-over-month transaction volume growth
-- Flag suspicious transactions (potential fraud)
-- Identify customers at churn risk
-- Build an executive summary dashboard in SQL
-
----
-
-## Skills Demonstrated (for your resume/LinkedIn)
-
-- Writing multi-table JOINs across a normalized schema
-- Aggregation and grouping for business metrics
-- CTEs for clean, readable query structure
-- Window functions: `RANK()`, `ROW_NUMBER()`, `LAG()`, running totals
-- Business thinking: translating analyst questions into SQL
-
----
-
-## Extending This Project
-
-Once you've completed all 4 files, here are ways to go further:
-
-1. **Add more data** — extend the sample data with 6+ months and 100+ customers
-2. **Build a dashboard** — connect to Tableau, Power BI, or Metabase
-3. **Write a report** — document your findings as if presenting to leadership
-4. **Optimize queries** — add indexes, rewrite for performance
-5. **Try BigQuery or Snowflake** — port this to a cloud warehouse
-
----
-
-*Project by Ismaeel Khan*
+Project by Ismaeel Khan | linkedin.com/in/your-linkedin
