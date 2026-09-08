@@ -4,9 +4,6 @@
 --  Concepts: CTEs (WITH), window functions (ROW_NUMBER, RANK,
 --            LAG, SUM OVER), running totals, cohort logic
 -- ============================================================
--- These are the queries that separate junior from mid-level analysts.
--- Recruiters and hiring managers LOVE seeing these on portfolios.
--- ============================================================
 
 
 -- ============================================================
@@ -38,8 +35,6 @@ SELECT
 FROM customer_spending
 ORDER BY overall_rank;
 
--- KEY IDEA: PARTITION BY is like GROUP BY inside the window.
--- It resets the ranking for each segment separately.
 
 
 -- ============================================================
@@ -64,9 +59,6 @@ FROM transactions t
     INNER JOIN customers c ON a.customer_id = c.customer_id
 ORDER BY t.account_id, t.transaction_date;
 
--- KEY IDEA: The OVER() clause defines the "window" — the set of rows
--- the function looks at. ROWS UNBOUNDED PRECEDING means "from the
--- very first row up to and including the current row".
 
 
 -- ============================================================
@@ -99,8 +91,6 @@ SELECT
 FROM monthly_volume
 ORDER BY month;
 
--- KEY IDEA: LAG() looks at the previous row's value.
--- This lets you compare current month vs last month in a single row.
 
 
 -- ============================================================
@@ -135,8 +125,6 @@ FROM customer_cohorts cc
 GROUP BY cc.cohort_month
 ORDER BY cc.cohort_month;
 
--- KEY IDEA: You can chain multiple CTEs using commas.
--- Each CTE can reference the ones defined before it.
 
 
 -- ============================================================
@@ -150,8 +138,7 @@ ORDER BY cc.cohort_month;
 WITH customer_avg_spend AS (
     SELECT
         a.customer_id,
-        AVG(ABS(t.amount)) AS avg_transaction_size,
-        STDDEV(ABS(t.amount)) AS stddev_amount
+        AVG(ABS(t.amount)) AS avg_transaction_size
     FROM transactions t
         INNER JOIN accounts a ON t.account_id = a.account_id
     WHERE t.amount < 0
@@ -214,7 +201,9 @@ ORDER BY customer_name, category_rank;
 -- Q7: Customer churn risk — who hasn't transacted in 30+ days?
 -- ============================================================
 -- Business context: Retention team flags customers at churn risk.
--- Concepts: CTE + MAX date per customer + date arithmetic
+-- Concepts: CTE + MAX date per customer + date arithmetic + NULL handling
+-- Note: customers with no transactions at all are the biggest risk, so
+--       the NULL case is checked first.
 
 WITH last_activity AS (
     SELECT
@@ -232,6 +221,8 @@ SELECT
     CAST(julianday('2024-03-01') - julianday(la.last_transaction_date) AS INTEGER)
         AS days_since_last_transaction,
     CASE
+        WHEN la.last_transaction_date IS NULL
+            THEN 'HIGH RISK - NO ACTIVITY'
         WHEN julianday('2024-03-01') - julianday(la.last_transaction_date) > 60
             THEN 'HIGH RISK'
         WHEN julianday('2024-03-01') - julianday(la.last_transaction_date) > 30
@@ -285,7 +276,7 @@ FROM totals t, account_totals at, txn_totals tt;
 
 
 -- ============================================================
--- CHALLENGE: Stretch goals
+-- FURTHER ANALYSIS IDEAS
 -- ============================================================
 -- A. Calculate the 7-day rolling average of daily transactions
 -- B. Find customers whose spending increased month-over-month
